@@ -7,7 +7,7 @@ def capture_and_detect_faces():
         print("Error: Could not open webcam")
         return
     
-    face_cascade_front = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+    face_cascade_front = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_alt_tree.xml')
     
     print("Press SPACE to capture and detect faces, or 'q' to quit")
     
@@ -25,10 +25,10 @@ def capture_and_detect_faces():
         # scaleFactor: how much is a region of the image enlarged between checks (higher -> faster, but more likely to miss faces)
         # minNeighbours: how many filters need to hit in a region to confirm a face (higher -> fewer FPs, more FNs)
         # minSize: min size of face (pixels) (lower detects faces farther away, more FPs)
-        faces = face_cascade_front.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=10, minSize=(30, 30))
+        front_faces = face_cascade_front.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(10, 10))
         
         # draw rectangle on face
-        for (x, y, w, h) in faces:
+        for (x, y, w, h) in front_faces:
             cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
         
         cv2.imshow("Face ID", frame)
