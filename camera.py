@@ -2,26 +2,32 @@ from picamera2 import Picamera2
 import cv2
 import time
 
-def main():
-    camera = Picamera2()
+class Camera:
+    def __init__(self):
+        self.image = None
 
-    camera.configure(camera.create_still_configuration(main={"format": "RGB888"}))
+        self.camera = Picamera2()
+        self.camera.configure(self.camera.create_still_configuration(main={"format": "RGB888"}))
 
-    camera.start()
-    time.sleep(2)
-    
-    print("Annnnnnnd...")
-    image = camera.capture_array()
-    print("CLICK!")
+    def capture_image(self):
+        self.camera.start()
+        self.image = self.camera.capture_array()
+        self.camera.close()
 
-    image = cv2.resize(image, (640, 360))
-    cv2.imshow("Captured Image", image)
-    cv2.waitKey(2000)
-    
-    cv2.destroyAllWindows()
-    camera.close()
+    def display_image(self, display_time):
+        resized_image = cv2.resize(self.image, (640, 360))
+        cv2.imshow("Captured Image", resized_image)
+        cv2.waitKey(2000)
+        cv2.destroyAllWindows()
+
+
+
+
 
 if __name__ == "__main__":
-    main()
+    camera = Camera()
+    camera.capture_image()
+    camera.display_image(2000)
+
 
 
