@@ -12,7 +12,7 @@ steps = 8 * 360/1.8 # 1.8 is angle per step, uses 1/8 microsteps as default
 print(steps)
 
 try:
-    for ii in range(int(100*steps)):
+    for ii in range(int(steps)):
         GPIO.output(16, GPIO.HIGH)
         time.sleep(SLEEP_TIME)
 
