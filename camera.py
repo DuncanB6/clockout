@@ -37,10 +37,17 @@ class Camera:
         # - minSize: min size of face (pixels) (lower detects faces farther away, more FPs)
         front_faces = self.face_cascade_front.detectMultiScale(self.image, scaleFactor=1.1, minNeighbors=10, minSize=(10, 10))
         
+        if len(front_faces) > 0:
+            return True
+        else:
+            return False
+
         # draw rectangle on face
-        for (x, y, w, h) in front_faces:
-            print("yo a face!")
-            cv2.rectangle(self.image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+        # for (x, y, w, h) in front_faces:
+        #     print("yo a face!")
+        #     cv2.rectangle(self.image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+
+        
 
 
 

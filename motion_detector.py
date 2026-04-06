@@ -1,20 +1,21 @@
 import RPi.GPIO as GPIO
 import time
 
-PIN = 23  # BCM numbering
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-# Use PUD_UP instead if your button/signal pulls to ground
-
-def check_motion():
-    return GPIO.input(PIN)
+def check_motion(pin):
+    return bool(GPIO.input(pin))
 
 if __name__ == "__main__":
 
+    PIN = 23  # BCM numbering
+
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+    # Use PUD_UP instead if your button/signal pulls to ground
+
     try:
         while True:
-            state = check_motion()
+            state = check_motion(PIN)
             if state:
                 print("HIGH")
             else:
