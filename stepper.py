@@ -1,7 +1,7 @@
 import RPi.GPIO as GPIO
 import time
 
-SLEEP_TIME = 0.0001
+SLEEP_TIME = 0.001
 STEP_ANGLE = 1.8
 
 
@@ -9,6 +9,7 @@ GPIO.setmode(GPIO.BCM) # use BCM pin numbering
 GPIO.setup(16, GPIO.OUT) # set GPIO 16 as output
 
 steps = 8 * 360/1.8 # 1.8 is angle per step, uses 1/8 microsteps as default
+steps = 1 * steps # rotate a few times
 print(steps)
 
 try:
