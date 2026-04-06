@@ -11,6 +11,7 @@ MOTION_PIN = 23
 MOTION_LED_PIN = 24
 CAMERA_LED_PIN = 25
 STEP_PIN = 16
+DIR_PIN = 12
 
 
 def setup():
@@ -22,6 +23,8 @@ def setup():
     GPIO.setup(MOTION_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
     GPIO.setup(MOTION_LED_PIN, GPIO.OUT)
     GPIO.setup(CAMERA_LED_PIN, GPIO.OUT)
+    GPIO.setup(STEP_PIN, GPIO.OUT)
+    GPIO.setup(DIR_PIN, GPIO.OUT)
     GPIO.setup(STEP_PIN, GPIO.OUT)
 
     return camera
@@ -44,7 +47,7 @@ def main_loop():
             motion = check_motion(MOTION_PIN)
             print("Motion detected?", motion)
 
-            spin_minute_degrees(90)
+            spin_minute_degrees(90, "counter_clockwise", "medium", STEP_PIN, DIR_PIN)
 
             led_off(MOTION_LED_PIN)
             led_off(CAMERA_LED_PIN)

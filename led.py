@@ -3,13 +3,11 @@ import time
 
 
 def led_on(led_pin):
-    print("Turning LED on...")
     GPIO.output(led_pin, GPIO.HIGH)
 
     return
 
 def led_off(led_pin):
-    print("Turning LED off...")
     GPIO.output(led_pin, GPIO.LOW)
 
     return
