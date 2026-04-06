@@ -22,6 +22,8 @@ class Camera:
         self.image = cv2.resize(self.image, (640, 360))
         self.image = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
 
+        self.image = cv2.rotate(self.image, cv2.ROTATE_180)
+
     def display_image(self, display_time):
         cv2.imshow("Captured Image", self.image)
         cv2.waitKey(2000)

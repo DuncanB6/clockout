@@ -22,18 +22,20 @@ def led_off(led_pin):
 
     return
 
-try:
-    while(1):
-        led_on(LED_PIN_1)
-        led_off(LED_PIN_2)
-        time.sleep(1)
+if __name__ == "__main__":
+
+    try:
+        while(1):
+            led_on(LED_PIN_1)
+            led_off(LED_PIN_2)
+            time.sleep(1)
+            led_off(LED_PIN_1)
+            led_on(LED_PIN_2)
+            time.sleep(1)
+
+
+    finally:
+        print("Cleaning up GPIO...")
         led_off(LED_PIN_1)
-        led_on(LED_PIN_2)
-        time.sleep(1)
-
-
-finally:
-    print("Cleaning up GPIO...")
-    led_off(LED_PIN_1)
-    led_off(LED_PIN_2)
-    GPIO.cleanup()
+        led_off(LED_PIN_2)
+        GPIO.cleanup()
