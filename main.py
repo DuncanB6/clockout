@@ -16,7 +16,6 @@ DIR_PIN = 12
 
 
 def setup():
-
     camera = Camera()
 
     GPIO.setmode(GPIO.BCM)
@@ -116,7 +115,6 @@ def wake_up():
 
 
 def main_loop():
-
     camera = setup()
 
     current_hands = calibrate_hands()
