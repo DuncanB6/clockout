@@ -37,8 +37,7 @@ if __name__ == "__main__":
     GPIO.setup(12, GPIO.OUT)
 
     try:
-        spin_minute_degrees(90, "clockwise", "medium", 16, 12)
-        spin_minute_degrees(90, "counter_clockwise", "medium", 16, 12)
+        spin_minute_degrees(4320, "clockwise", "medium", 16, 12)
 
     except KeyboardInterrupt:
         print("Exiting program")

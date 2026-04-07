@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 from datetime import datetime
+import time
 
 from camera import Camera
 from motion_detector import check_motion
@@ -42,7 +43,7 @@ def cleanup(camera):
 
 
 def calibrate_hands():
-    print("Use a/d for large moves, w/s for small moves, enter time (4 digit number) to quit")
+    print("Use a/d for large moves, w/s for small moves, enter time (4 digit number) to complete calibration")
 
     current_hands = 0000
 
@@ -65,43 +66,53 @@ def calibrate_hands():
 
 
 def set_to_current_time(current_hands):
-    # parse input time (e.g., 0430 → 4:30)
     current_hands = f"{current_hands:04d}"
     current_h = int(current_hands[:2]) % 12
     current_m = int(current_hands[2:])
     
-    now = datetime.now()
-    print(now)
-    real_h = now.hour % 12
-    real_m = now.minute
+    real_time= datetime.now()
+    real_h = real_time.hour % 12
+    real_m = real_time.minute
 
-    current_angle = (current_h * 360) + (current_m * 6)
-    target_angle = (real_h * 360) + (real_m * 6)
-    print(current_angle, target_angle)
+    current_angle = ((current_h * 360) + (current_m * 6)) % (12 * 360)
+    real_angle = ((real_h * 360) + (real_m * 6)) % (12 * 360)
 
-    min_value = 360
-    max_value = 7860
+    diff = current_angle - real_angle
+    if diff >= 0 and diff < (6 * 360):
+        spin_minute_degrees(diff, "counter_clockwise", "fast", STEP_PIN, DIR_PIN)
+    
+    diff = real_angle - current_angle
+    if diff >= 0 and diff <= (6 * 360):
+        spin_minute_degrees(diff, "clockwise", "fast", STEP_PIN, DIR_PIN)
 
-    current_angle = current_angle - min_value
-    target_angle = target_angle - min_value
-    max_value = max_value - min_value
+    diff = 4320 - current_angle + real_angle
+    if diff <= (6 * 360):
+        spin_minute_degrees(diff, "clockwise", "fast", STEP_PIN, DIR_PIN)
 
-    diff = (current_angle - target_angle) % max_value  # Wrap between 0 and 360
-    if diff > (max_value / 2):
-        diff -= max_value
-
-    print(diff)
-
-    if diff < 0:
-        spin_minute_degrees(abs(diff), "clockwise", "medium", STEP_PIN, DIR_PIN)
-    elif diff > 0:
-        spin_minute_degrees(abs(diff), "counter_clockwise", "medium", STEP_PIN, DIR_PIN)
-    else:
-        pass
+    diff = 4320 - real_angle + current_angle
+    if diff < (6 * 360):
+        spin_minute_degrees(diff, "counter_clockwise", "fast", STEP_PIN, DIR_PIN)
 
     current_hands = int(f"{real_h}{real_m}")
 
     return current_hands
+
+
+def wake_up():
+    for ii in range(20):
+        led_on(MOTION_LED_PIN)
+        led_on(CAMERA_LED_PIN)
+        time.sleep(1/(ii+3))
+        led_off(MOTION_LED_PIN)
+        led_off(CAMERA_LED_PIN)
+        time.sleep(1/(ii+3))
+
+    spin_minute_degrees(30, "counter_clockwise", "medium", STEP_PIN, DIR_PIN)
+    spin_minute_degrees(30, "clockwise", "medium", STEP_PIN, DIR_PIN)
+    spin_minute_degrees(30, "counter_clockwise", "medium", STEP_PIN, DIR_PIN)
+    spin_minute_degrees(30, "clockwise", "medium", STEP_PIN, DIR_PIN)
+
+    return
 
 
 def main_loop():
@@ -109,6 +120,8 @@ def main_loop():
     camera = setup()
 
     current_hands = calibrate_hands()
+
+    wake_up()
 
     try:
         while True:
