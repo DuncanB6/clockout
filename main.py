@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
 from datetime import datetime
 import time
+import sys
 
 from camera import Camera
 from motion_detector import check_motion
@@ -41,29 +42,6 @@ def cleanup(camera):
     return
 
 
-def calibrate_hands():
-    print("Use a/d for large moves, w/s for small moves, enter time (4 digit number) to complete calibration")
-
-    current_hands = 0000
-
-    while True:
-        key = input("Command: ").lower()
-
-        if key == "a":
-            spin_minute_degrees(5, "counter_clockwise", "medium", STEP_PIN, DIR_PIN)
-        elif key == "d":
-            spin_minute_degrees(5, "clockwise", "medium", STEP_PIN, DIR_PIN)
-        elif key == "w":
-            spin_minute_degrees(1, "counter_clockwise", "medium", STEP_PIN, DIR_PIN)
-        elif key == "s":
-            spin_minute_degrees(1, "clockwise", "medium", STEP_PIN, DIR_PIN)
-        elif key.isnumeric():
-            current_hands = int(key)
-            break
-
-    return current_hands
-
-
 def set_to_current_time(current_hands):
     current_hands = f"{current_hands:04d}"
     current_h = int(current_hands[:2]) % 12
@@ -79,21 +57,28 @@ def set_to_current_time(current_hands):
     diff = current_angle - real_angle
     if diff >= 0 and diff < (6 * 360):
         spin_minute_degrees(diff, "counter_clockwise", "fast", STEP_PIN, DIR_PIN)
+        current_hands = int(f"{real_h}{real_m}")
+        return current_hands
     
     diff = real_angle - current_angle
     if diff >= 0 and diff <= (6 * 360):
         spin_minute_degrees(diff, "clockwise", "fast", STEP_PIN, DIR_PIN)
+        current_hands = int(f"{real_h}{real_m}")
+        return current_hands
 
     diff = 4320 - current_angle + real_angle
     if diff <= (6 * 360):
         spin_minute_degrees(diff, "clockwise", "fast", STEP_PIN, DIR_PIN)
+        current_hands = int(f"{real_h}{real_m}")
+        return current_hands
 
     diff = 4320 - real_angle + current_angle
     if diff < (6 * 360):
         spin_minute_degrees(diff, "counter_clockwise", "fast", STEP_PIN, DIR_PIN)
+        current_hands = int(f"{real_h}{real_m}")
+        return current_hands
 
     current_hands = int(f"{real_h}{real_m}")
-
     return current_hands
 
 
@@ -114,10 +99,8 @@ def wake_up():
     return
 
 
-def main_loop():
+def main_loop(current_hands):
     camera = setup()
-
-    current_hands = calibrate_hands()
 
     wake_up()
 
@@ -155,7 +138,16 @@ def main_loop():
 
 
 if __name__ == "__main__":
-    main_loop()
+
+    if len(sys.argv) < 2:
+        print("Usage: python3 main.py <current_hands>")
+        sys.exit(1)
+
+    current_hands = int(sys.argv[1])
+
+    print("Current hands input:", current_hands)
+
+    main_loop(current_hands)
     
 
 

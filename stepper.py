@@ -13,7 +13,7 @@ def spin_minute_degrees(degrees, direction, speed, step_pin, dir_pin):
     elif speed == "medium":
         sleep_time = 0.001
     elif speed == "slow":
-        sleep_time = 0.005
+        sleep_time = 0.0001
 
 
     steps = 8 * 360/1.8 # 1.8 is angle per step, uses 1/8 microsteps as default
@@ -37,7 +37,7 @@ if __name__ == "__main__":
     GPIO.setup(12, GPIO.OUT)
 
     try:
-        spin_minute_degrees(4320, "clockwise", "medium", 16, 12)
+        spin_minute_degrees(4*360, "counter_clockwise", "medium", 16, 12)
 
     except KeyboardInterrupt:
         print("Exiting program")
