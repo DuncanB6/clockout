@@ -47,7 +47,7 @@ def set_to_current_time(current_hands):
     current_h = int(current_hands[:2]) % 12
     current_m = int(current_hands[2:])
     
-    real_time= datetime.now()
+    real_time = datetime.now()
     real_h = real_time.hour % 12
     real_m = real_time.minute
 
@@ -55,28 +55,24 @@ def set_to_current_time(current_hands):
     real_angle = ((real_h * 360) + (real_m * 6)) % (12 * 360)
 
     diff = current_angle - real_angle
-    if diff >= 0 and diff < (6 * 360):
+    if diff >= 0 and diff <= (6 * 360):
         spin_minute_degrees(diff, "counter_clockwise", "fast", STEP_PIN, DIR_PIN)
-        current_hands = int(f"{real_h}{real_m}")
-        return current_hands
     
     diff = real_angle - current_angle
     if diff >= 0 and diff <= (6 * 360):
         spin_minute_degrees(diff, "clockwise", "fast", STEP_PIN, DIR_PIN)
-        current_hands = int(f"{real_h}{real_m}")
-        return current_hands
 
     diff = 4320 - current_angle + real_angle
     if diff <= (6 * 360):
         spin_minute_degrees(diff, "clockwise", "fast", STEP_PIN, DIR_PIN)
-        current_hands = int(f"{real_h}{real_m}")
-        return current_hands
 
     diff = 4320 - real_angle + current_angle
-    if diff < (6 * 360):
+    if diff <= (6 * 360):
         spin_minute_degrees(diff, "counter_clockwise", "fast", STEP_PIN, DIR_PIN)
-        current_hands = int(f"{real_h}{real_m}")
-        return current_hands
+    
+    else:
+        wake_up()
+        raise ValueError(f"Current time: {current_hands}\n Real time: {real_time}")
 
     current_hands = int(f"{real_h}{real_m}")
     return current_hands

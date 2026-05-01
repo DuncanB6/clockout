@@ -18,15 +18,15 @@ class Camera:
 
     def capture_image(self):
         self.image = self.camera.capture_array()
-
-        self.image = cv2.resize(self.image, (640, 360))
+        self.image = cv2.resize(self.image, (960, 540))
+        print("Image size:", self.image.shape)
         self.image = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
-
         self.image = cv2.rotate(self.image, cv2.ROTATE_180)
 
     def display_image(self, display_time):
         cv2.imshow("Captured Image", self.image)
-        cv2.waitKey(2000)
+        cv2.waitKey(1)
+        time.sleep(display_time/1000)
         cv2.destroyAllWindows()
 
     def detect_face(self):
@@ -35,20 +35,17 @@ class Camera:
         # - scaleFactor: how much is a region of the image enlarged between checks (higher -> faster, but more likely to miss faces)
         # - minNeighbours: how many filters need to hit in a region to confirm a face (higher -> fewer FPs, more FNs)
         # - minSize: min size of face (pixels) (lower detects faces farther away, more FPs)
-        front_faces = self.face_cascade_front.detectMultiScale(self.image, scaleFactor=1.1, minNeighbors=10, minSize=(10, 10))
+        front_faces = self.face_cascade_front.detectMultiScale(self.image, scaleFactor=1.05, minNeighbors=10, minSize=(10, 10))
         
+        #draw rectangle on face
+        for (x, y, w, h) in front_faces:
+            print("yo a face!")
+            cv2.rectangle(self.image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+
         if len(front_faces) > 0:
             return True
         else:
             return False
-
-        # draw rectangle on face
-        # for (x, y, w, h) in front_faces:
-        #     print("yo a face!")
-        #     cv2.rectangle(self.image, (x, y), (x+w, y+h), (0, 255, 0), 2)
-
-        
-
 
 
 if __name__ == "__main__":
@@ -57,7 +54,7 @@ if __name__ == "__main__":
         print("scanning...")
         camera.capture_image()
         camera.detect_face()
-        camera.display_image(2000)
+        camera.display_image(5000)
     
     camera.close_camera()
 
