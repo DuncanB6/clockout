@@ -25,10 +25,10 @@ if __name__ == "__main__":
 
     try:
         while(1):
-            #led_on(LED_PIN_1)
+            led_on(LED_PIN_1)
             led_off(LED_PIN_2)
             time.sleep(1)
-            #led_off(LED_PIN_1)
+            led_off(LED_PIN_1)
             led_on(LED_PIN_2)
             time.sleep(1)
 

@@ -19,7 +19,6 @@ class Camera:
     def capture_image(self):
         self.image = self.camera.capture_array()
         self.image = cv2.resize(self.image, (960, 540))
-        print("Image size:", self.image.shape)
         self.image = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
         self.image = cv2.rotate(self.image, cv2.ROTATE_180)
 
@@ -37,10 +36,10 @@ class Camera:
         # - minSize: min size of face (pixels) (lower detects faces farther away, more FPs)
         front_faces = self.face_cascade_front.detectMultiScale(self.image, scaleFactor=1.05, minNeighbors=10, minSize=(10, 10))
         
-        #draw rectangle on face
-        for (x, y, w, h) in front_faces:
-            print("yo a face!")
-            cv2.rectangle(self.image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+        # #draw rectangle on face (debugging)
+        # for (x, y, w, h) in front_faces:
+        #     print("yo a face!")
+        #     cv2.rectangle(self.image, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
         if len(front_faces) > 0:
             return True

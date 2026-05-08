@@ -54,28 +54,40 @@ def set_to_current_time(current_hands):
     current_angle = ((current_h * 360) + (current_m * 6)) % (12 * 360)
     real_angle = ((real_h * 360) + (real_m * 6)) % (12 * 360)
 
+    found_solution = False
+
     diff = current_angle - real_angle
     if diff >= 0 and diff <= (6 * 360):
         spin_minute_degrees(diff, "counter_clockwise", "fast", STEP_PIN, DIR_PIN)
+        current_hands = int(f"{real_h}{real_m}")
+        print("Hands are now:", current_hands)
+        return current_hands
     
     diff = real_angle - current_angle
     if diff >= 0 and diff <= (6 * 360):
         spin_minute_degrees(diff, "clockwise", "fast", STEP_PIN, DIR_PIN)
+        current_hands = int(f"{real_h}{real_m}")
+        print("Hands are now:", current_hands)
+        return current_hands
 
     diff = 4320 - current_angle + real_angle
     if diff <= (6 * 360):
         spin_minute_degrees(diff, "clockwise", "fast", STEP_PIN, DIR_PIN)
+        current_hands = int(f"{real_h}{real_m}")
+        print("Hands are now:", current_hands)
+        return current_hands
 
     diff = 4320 - real_angle + current_angle
     if diff <= (6 * 360):
         spin_minute_degrees(diff, "counter_clockwise", "fast", STEP_PIN, DIR_PIN)
+        current_hands = int(f"{real_h}{real_m}")
+        print("Hands are now:", current_hands)
+        return current_hands
     
     else:
-        wake_up()
-        raise ValueError(f"Current time: {current_hands}\n Real time: {real_time}")
+        raise ValueError(f"Current hands: {current_hands}\nCurrent angle: {current_angle}\n Real time: {real_time}\nReal angle: {real_angle}")
 
-    current_hands = int(f"{real_h}{real_m}")
-    return current_hands
+    return None
 
 
 def wake_up():
